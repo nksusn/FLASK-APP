@@ -140,6 +140,26 @@ Werkzeug==2.3.7
         ◦ /health — Returns JSON health status
         ◦ /metrics — Returns visit stats
         ◦ /reset — Resets the counter
+        
+  Architecture diagram (visual)
+  
+┌───────────────┐          ┌────────────────────┐
+│  Your browser │──►5050──►│ Flask app service │
+│ (localhost)   │          │  (container:5000) │
+└───────────────┘          │        │          │
+                           │        ▼          │
+                           │   MongoDB         │
+                           │ (container:27017) │
+                           └────────┬──────────┘
+                                    │
+                             ┌──────▼───────┐
+                             │ mongo_data   │
+                             │ (named vol.) │
+                             └──────────────┘
+  - You connect to port 5050 on your machine → goes to Flask app container’s port 5000.
+  - Flask app talks to MongoDB internally on port 27017.
+  - MongoDB stores data inside mongo_data volume so data persists even if container stops.  
+
 
 🚀 Step-by-Step Deployment Guide
 1. Open VS Code and Clone the Repo
